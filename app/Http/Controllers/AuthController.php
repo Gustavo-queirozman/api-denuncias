@@ -28,7 +28,8 @@ class AuthController extends BaseController
         $validator = Validator::make($request->all(), [
             'user' => 'required|unique:users', // Added unique validation
             'password' => 'required',
-            'c_password' => 'required|same:password'
+            'c_password' => 'required|same:password',
+            'is_admin' => 'boolean'
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +40,7 @@ class AuthController extends BaseController
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['name'] =  $user->name;
+        $success['user'] =  $user->user;
 
         return $this->sendResponse($success, 'User register successfully.');
     }

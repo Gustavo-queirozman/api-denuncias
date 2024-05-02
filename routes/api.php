@@ -36,5 +36,4 @@ Route::middleware('auth:api')->group(function () {
     Route::post('usuario/{id}', EditarUsuarioController::class)->middleware('admin');
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
 
-
 });
