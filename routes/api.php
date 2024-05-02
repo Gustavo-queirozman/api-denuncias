@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
 use App\Http\Controllers\Denuncia\ExcluirController AS ExcluirDenunciaController;
 use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
+use App\Http\Controllers\Esclarecimento\CriarController AS CriarEsclarecimentoController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
 use App\Http\Controllers\Usuario\ExcluirController AS ExcluirUsuarioController;
 use App\Http\Controllers\Usuario\ListarController AS ListarUsuarioController;
@@ -19,11 +20,6 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 */
 
 //Route::post('login', [AuthController::class, 'login'])->name('login');
@@ -42,4 +38,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('denuncias', ListarDenunciaController::class);
     Route::post('denuncia', CriarDenunciaController::class);
     Route::delete('denuncia/{id}', ExcluirDenunciaController::class);
+
+    Route::post('esclarecimento', CriarEsclarecimentoController::class);
 });
