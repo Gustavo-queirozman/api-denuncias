@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
 use App\Http\Controllers\Usuario\ExcluirController AS ExcluirUsuarioController;
 use App\Http\Controllers\Usuario\ListarController AS ListarUsuarioController;
@@ -23,8 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 */
 
-Route::post('login', [AuthController::class, 'login'])->name('login');
-Route::get('login', [AuthController::class, 'login'])->name('login');
+//Route::post('login', [AuthController::class, 'login'])->name('login');
+//Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('forgot', [AuthController::class, 'forgot']);
 Route::post('reset', [AuthController::class, 'reset']);
@@ -36,4 +37,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('usuario/{id}', EditarUsuarioController::class)->middleware('admin');
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
 
+    Route::post('denuncia', CriarDenunciaController::class);
 });
