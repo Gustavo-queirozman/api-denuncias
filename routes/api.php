@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Denuncia\CriarController as CriarDenunciaController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
 use App\Http\Controllers\Usuario\ExcluirController AS ExcluirUsuarioController;
 use App\Http\Controllers\Usuario\ListarController AS ListarUsuarioController;
@@ -36,4 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('usuarios', ListarUsuarioController::class)->middleware('admin');
     Route::post('usuario/{id}', EditarUsuarioController::class)->middleware('admin');
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
+
+    Route::post('denuncia', CriarDenunciaController::class);
+    
 });
