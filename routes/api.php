@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Denuncia\Anexo\CriarController AS CriarAnexoController;
 use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
 use App\Http\Controllers\Denuncia\ExcluirController AS ExcluirDenunciaController;
 use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
@@ -40,4 +41,6 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('denuncia/{id}', ExcluirDenunciaController::class);
 
     Route::post('esclarecimento', CriarEsclarecimentoController::class);
+
+    Route::post('anexo', CriarAnexoController::class);
 });

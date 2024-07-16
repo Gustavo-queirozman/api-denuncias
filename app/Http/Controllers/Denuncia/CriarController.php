@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Denuncia;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anexo;
 use App\Models\Denuncia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,18 +24,35 @@ class CriarController
         $denuncia['numero_protocolo'] = $protocolo;
         $denuncia['users_id'] = Auth::user()->id;
 
-        try{
-            Denuncia::created($denuncia);
-            return response()->json([
-                "message" => "Denuncia criada com sucesso"
-            ]);
-        }catch(\Exception $error){
-
+        try {
+            $denuncia = Denuncia::created($denuncia);
+        } catch (\Exception $error) {
         }
 
+        $anexos = $request->file();
+        foreach ($anexos as $anexo) {
+            $nomeAnexo = $anexo->getClientOriginalName();
+            $extensaoAnexo = $anexo->getClientOriginalExtension();
+            $anexo['nome_anexo'] = $this->nomearAnexo() . "." . $extensaoAnexo;
+
+            $anexo->storeAs('public', $nomeAnexo);
+
+            try {
+                Anexo::insert($anexo);
+            } catch (\Exception $error) {
+                return response()->json([
+                    "error" => $error
+                ]);
+            }
+        }
+
+        return response()->json([
+            "message" => "Denuncia criada com sucesso"
+        ]);
     }
 
-    private function validaDados($request){
+    private function validaDados($request)
+    {
         $request->validate([
             'nome' => 'required|string|max:255',
             'funcao' => 'required|string|max:255',
@@ -46,7 +64,13 @@ class CriarController
         ]);
     }
 
-    private function geraProtocolo(){
+    private function geraProtocolo()
+    {
         return Carbon::now()->format('YmdHmsv');
+    }
+
+    private function nomearAnexo()
+    {
+        Carbon::now()->format('YmdHmsv');
     }
 }
