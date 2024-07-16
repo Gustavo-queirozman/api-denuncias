@@ -41,5 +41,5 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('denuncia/{id}', ExcluirDenunciaController::class);
 
     Route::post('resposta', CriarRespostaController::class);
-    
+
 });

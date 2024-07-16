@@ -78,31 +78,14 @@ return [
             'sslmode' => 'prefer',
         ],
 
-        'Cardio' => [
+        'PortalDenuncia' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE1'),
+            'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
-            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
-        ],
-
-
-
-        'Cancelamento' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '-'),
-            'port' => env('DB_PORT', '-'),
-            'database' => env('DB_DATABASE2', '-'),
-            'username' => env('DB_USERNAME', '-'),
-            'password' => env('DB_PASSWORD', '-'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
