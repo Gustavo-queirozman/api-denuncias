@@ -8,6 +8,7 @@ use App\Models\Denuncia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CriarController
@@ -16,8 +17,6 @@ class CriarController
 
     public function __invoke(Request $request)
     {
-
-
         $this->validaDados($request);
         $protocolo = $this->geraProtocolo();
         $denuncia = $request->all();
@@ -25,17 +24,18 @@ class CriarController
         $denuncia['users_id'] = Auth::user()->id;
 
         try {
-            $denuncia = Denuncia::created($denuncia);
+            $idDenuncia = Denuncia::created($denuncia);
         } catch (\Exception $error) {
         }
 
-        $anexos = $request->file();
+        $anexos = $request->file('anexos');
         foreach ($anexos as $anexo) {
             $nomeAnexo = $anexo->getClientOriginalName();
             $extensaoAnexo = $anexo->getClientOriginalExtension();
             $anexo['nome_anexo'] = $this->nomearAnexo() . "." . $extensaoAnexo;
+            $anexo['denuncias_id'] = $idDenuncia;
 
-            $anexo->storeAs('public', $nomeAnexo);
+            Storage::put($nomeAnexo, $anexo->getContent());
 
             try {
                 Anexo::insert($anexo);

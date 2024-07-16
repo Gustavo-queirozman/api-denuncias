@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Denuncia\Anexo\CriarController AS CriarAnexoController;
 use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
 use App\Http\Controllers\Denuncia\ExcluirController AS ExcluirDenunciaController;
 use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
@@ -23,8 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::post('login', [AuthController::class, 'login'])->name('login');
-//Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('forgot', [AuthController::class, 'forgot']);
 Route::post('reset', [AuthController::class, 'reset']);
@@ -41,6 +40,4 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('denuncia/{id}', ExcluirDenunciaController::class);
 
     Route::post('esclarecimento', CriarEsclarecimentoController::class);
-
-    Route::post('anexo', CriarAnexoController::class);
 });
