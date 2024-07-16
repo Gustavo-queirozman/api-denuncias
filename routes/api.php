@@ -38,6 +38,4 @@ Route::middleware('auth:api')->group(function () {
     Route::get('denuncias', ListarDenunciaController::class);
     Route::post('denuncia', CriarDenunciaController::class);
     Route::delete('denuncia/{id}', ExcluirDenunciaController::class);
-
-    Route::post('esclarecimento', CriarEsclarecimentoController::class);
 });
