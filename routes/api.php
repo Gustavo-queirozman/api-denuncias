@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
 use App\Http\Controllers\Denuncia\ExcluirController AS ExcluirDenunciaController;
 use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
+use App\Http\Controllers\Denuncia\MostrarController;
 use App\Http\Controllers\Esclarecimento\CriarController AS CriarEsclarecimentoController;
 use App\Http\Controllers\Resposta\CriarRespostaController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
@@ -38,6 +39,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('denuncias', ListarDenunciaController::class);
     Route::post('denuncia', CriarDenunciaController::class);
+    Route::post('denuncia/{protocolo}', MostrarController::class);
 
     Route::post('resposta', CriarRespostaController::class);
 
