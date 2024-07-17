@@ -20,47 +20,52 @@ class CriarController
         $this->validaDados($request);
         $protocolo = $this->geraProtocolo();
         $denuncia = $request->all();
-        $denuncia['numero_protocolo'] = $protocolo;
-        $denuncia['users_id'] = Auth::user()->id;
 
         try {
-            $idDenuncia = Denuncia::created($denuncia);
+            $denuncia['protocolo'] = $protocolo;
+            $idDenuncia = Denuncia::create($denuncia)->id;
         } catch (\Exception $error) {
+            return response()->json([
+                "error" => "Erro ao criar a denúncia: " . $error->getMessage()
+            ], 500);
         }
 
         $anexos = $request->file('anexos');
-        foreach ($anexos as $anexo) {
-            $nomeAnexo = $anexo->getClientOriginalName();
-            $extensaoAnexo = $anexo->getClientOriginalExtension();
-            $anexo['nome_anexo'] = $this->nomearAnexo() . "." . $extensaoAnexo;
-            $anexo['denuncias_id'] = $idDenuncia;
 
-            Storage::put($nomeAnexo, $anexo->getContent());
+        if (is_array($anexos)) {
+            foreach ($anexos as $anexo) {
+                $nomeAnexo = $anexo->getClientOriginalName();
+                $extensaoAnexo = $anexo->getClientOriginalExtension();
+                $anexoData = [
+                    'nome_anexo' => $this->nomearAnexo() . "." . $extensaoAnexo,
+                    'denuncias_id' => $idDenuncia
+                ];
 
-            try {
-                Anexo::insert($anexo);
-            } catch (\Exception $error) {
-                return response()->json([
-                    "error" => $error
-                ]);
+                Storage::put($nomeAnexo, $anexo->getContent());
+
+                try {
+                    Anexo::create($anexoData);
+                } catch (\Exception $error) {
+                    return response()->json([
+                        "error" => "Erro ao salvar o anexo: " . $error->getMessage()
+                    ], 500);
+                }
             }
         }
 
         return response()->json([
-            "message" => "Denuncia criada com sucesso"
+            "message" => "Denúncia criada com sucesso"
         ]);
     }
 
     private function validaDados($request)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'funcao' => 'required|string|max:255',
-            'email' => 'email|max:256',
-            'telefone' => 'max:15',
-            'descricao' => 'required|max:255',
-            'status' => 'required|max:50',
-            'referencia_protocolo' => 'max:50',
+            'denuncia' => 'required|string|max:1000',
+            'status' => 'required|string|max:20',
+            'protocolo' => 'required|string|max:20',
+            'senha' => 'required|string|max:20',
+            'fk_departamentos' => 'integer'
         ]);
     }
 
@@ -71,6 +76,6 @@ class CriarController
 
     private function nomearAnexo()
     {
-        Carbon::now()->format('YmdHmsv');
+        return Carbon::now()->format('YmdHmsv');
     }
 }

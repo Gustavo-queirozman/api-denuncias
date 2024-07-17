@@ -12,17 +12,11 @@ class Denuncia extends Model
     protected $table = 'denuncias';
 
     protected $fillable = [
-        'nome',
-        'funcao',
-        'email',
-        'telefone',
-        'descricao',
+        'denuncia',
         'status',
-        'referencia_protocolo',
-        'numero_protocolo',
-        'users_id',
-        'tepos_relato_id',
-        'locais_relato_id'
+        'protocolo',
+        'senha',
+        'departamentos_id'
     ];
 
     public $timestamp = true;
