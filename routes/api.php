@@ -7,6 +7,7 @@ use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
 use App\Http\Controllers\Denuncia\MostrarController;
 use App\Http\Controllers\Esclarecimento\CriarController AS CriarEsclarecimentoController;
 use App\Http\Controllers\Resposta\CriarRespostaController;
+use App\Http\Controllers\Resposta\ListarController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
 use App\Http\Controllers\Usuario\ExcluirController AS ExcluirUsuarioController;
 use App\Http\Controllers\Usuario\ListarController AS ListarUsuarioController;
@@ -42,5 +43,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('denuncia/{protocolo}', MostrarController::class);
 
     Route::post('resposta', CriarRespostaController::class);
+    Route::get('respostas/{protocolo}', ListarController::class);
 
 });
