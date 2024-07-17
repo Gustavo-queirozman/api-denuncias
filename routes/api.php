@@ -44,5 +44,5 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('resposta', CriarRespostaController::class);
     Route::get('respostas/{protocolo}', ListarController::class);
-
+    Route::post('resposta/{protocolo}', CriarRespostaController::class);
 });
