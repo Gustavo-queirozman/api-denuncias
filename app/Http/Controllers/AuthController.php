@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Gate;
 
 class AuthController extends BaseController
 {
@@ -24,27 +25,28 @@ class AuthController extends BaseController
      */
     public function register(Request $request): JsonResponse
     {
+        if (Gate::allows('permission-adm')) {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email|unique:users', // Added unique validation
+                'password' => 'required|max:255',
+                'name' => 'required|max:256',
+                'login' => 'required|max:50',
+                'is_admin' => 'boolean',
+                'enable' => 'boolean'
+            ]);
 
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users', // Added unique validation
-            'password' => 'required|max:255',
-            'name' => 'required|max:256',
-            'login' => 'required|max:50',
-            'is_admin' => 'boolean',
-            'enable' => 'boolean'
-        ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            $input = $request->all();
+            $input['password'] = bcrypt($input['password']);
+            $user = User::create($input);
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
+            $success['user'] =  $user->user;
+
+            return $this->sendResponse($success, 'User register successfully.');
         }
-
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['user'] =  $user->user;
-
-        return $this->sendResponse($success, 'User register successfully.');
     }
 
     /**
@@ -54,7 +56,7 @@ class AuthController extends BaseController
      */
     public function login(Request $request): JsonResponse
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['login' => $request->login, 'password' => $request->password])) {
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
@@ -89,23 +91,22 @@ class AuthController extends BaseController
                 404
             );*/
 
-            $token = Str::random(10);
-        try{
+        $token = Str::random(10);
+        try {
             DB::connection('SegundaVia')->table('password_reset_tokens')->insert([
                 'email' => $email,
                 'token' => $token
             ]);
-        }catch(\Exception $exception){
-            if(Str::contains($exception->getMessage(),'insert duplicate')){
+        } catch (\Exception $exception) {
+            if (Str::contains($exception->getMessage(), 'insert duplicate')) {
                 DB::connection('SegundaVia')->table('password_reset_tokens')->where('email', $email)->update([
                     'token' => $token
                 ]);
             }
-
         }
 
         try {
-            Mail::send('Mails.forgot', ['token'=>$token], function(MailMessage $message) use ($email){
+            Mail::send('Mails.forgot', ['token' => $token], function (MailMessage $message) use ($email) {
                 $message->to($email);
                 $message->subject('Alterar senha');
             });
@@ -113,7 +114,6 @@ class AuthController extends BaseController
             return response([
                 'message' => 'Checked you email!'
             ]);
-
         } catch (\Exception $exception) {
             return response([
                 'message' => $exception->getMessage()
@@ -121,7 +121,8 @@ class AuthController extends BaseController
         }
     }
 
-    public function reset(Request $request){
+    public function reset(Request $request)
+    {
         DB::setDefaultConnection('SegundaVia');
         $validator = Validator::make($request->all(), [
             'token' => 'required',
@@ -135,24 +136,24 @@ class AuthController extends BaseController
 
         $token = $request->input('token');
 
-        if(! $passwordResets = DB::connection('SegundaVia')->table('password_reset_tokens')->where('token', $token)->first()){
+        if (!$passwordResets = DB::connection('SegundaVia')->table('password_reset_tokens')->where('token', $token)->first()) {
             return response([
                 'message' => 'Invalid token!'
-            ],400);
+            ], 400);
         }
 
-        if(!$user = DB::connection('SegundaVia')->table('users')->where('email', $passwordResets->email)->first()){
+        if (!$user = DB::connection('SegundaVia')->table('users')->where('email', $passwordResets->email)->first()) {
             return response([
                 'message' => 'User does\'t exist!'
             ], 404);
         }
 
-        $password= Hash::make($request->input('password'));
+        $password = Hash::make($request->input('password'));
 
 
-        if(DB::connection('SegundaVia')->table('users')->where('id', $user->id)->update(['password' => $password])){
+        if (DB::connection('SegundaVia')->table('users')->where('id', $user->id)->update(['password' => $password])) {
             return response([
-                'message'=> 'sucess'
+                'message' => 'sucess'
             ]);
         }
     }
