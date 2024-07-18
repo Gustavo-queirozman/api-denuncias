@@ -30,7 +30,7 @@ class AuthController extends BaseController
                 'email' => 'required|email|unique:users', // Added unique validation
                 'password' => 'required|max:255',
                 'name' => 'required|max:256',
-                'login' => 'required|max:50',
+                'login' => 'required|unique:users|max:50',
                 'is_admin' => 'boolean',
                 'enable' => 'boolean'
             ]);
