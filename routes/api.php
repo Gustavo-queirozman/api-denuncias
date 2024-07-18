@@ -2,12 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Denuncia\CriarController AS CriarDenunciaController;
-use App\Http\Controllers\Denuncia\ExcluirController AS ExcluirDenunciaController;
 use App\Http\Controllers\Denuncia\ListarController AS ListarDenunciaController;
-use App\Http\Controllers\Denuncia\MostrarController;
-use App\Http\Controllers\Esclarecimento\CriarController AS CriarEsclarecimentoController;
+use App\Http\Controllers\Denuncia\MostrarController AS MostrarDenunciaController;
 use App\Http\Controllers\Resposta\CriarRespostaController;
-use App\Http\Controllers\Resposta\ListarController;
+use App\Http\Controllers\Resposta\ListarController AS ListarRespostaController;
 use App\Http\Controllers\Usuario\EditarController AS EditarUsuarioController;
 use App\Http\Controllers\Usuario\ExcluirController AS ExcluirUsuarioController;
 use App\Http\Controllers\Usuario\ListarController AS ListarUsuarioController;
@@ -39,8 +37,7 @@ Route::middleware('auth:api')->group(function () {
 
 Route::get('denuncias', ListarDenunciaController::class);
 Route::post('denuncia', CriarDenunciaController::class);
-Route::get('denuncia/{protocolo}', MostrarController::class);
+Route::get('denuncia/{protocolo}', MostrarDenunciaController::class);
 
+Route::get('resposta/{protocolo}', ListarRespostaController::class);
 Route::post('resposta', CriarRespostaController::class);
-Route::get('respostas', ListarController::class);
-Route::post('resposta/{protocolo}', CriarRespostaController::class);
