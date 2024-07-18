@@ -46,6 +46,10 @@ class AuthController extends BaseController
             $success['user'] =  $user->user;
 
             return $this->sendResponse($success, 'User register successfully.');
+        }else{
+            return response()->json([
+                "message"=> "Usuário sem permissão"
+            ],403);
         }
     }
 

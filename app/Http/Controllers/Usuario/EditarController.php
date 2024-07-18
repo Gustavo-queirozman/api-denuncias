@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Usuario;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class EditarController extends Controller
@@ -13,34 +14,38 @@ class EditarController extends Controller
 
     public function __invoke(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8',
-            'is_admin' => 'boolean',
-            'blocked' => 'boolean',
-        ]);
+        if (Gate::allows('permission-adm')) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255',
+                'password' => 'required|string|min:8',
+                'is_admin' => 'boolean',
+                'blocked' => 'boolean',
+            ]);
 
-        // Encontre o usuário pelo ID fornecido
-        $usuario = User::find($id);
+            // Encontre o usuário pelo ID fornecido
+            $usuario = User::find($id);
 
-        // Verifique se o usuário foi encontrado
-        if (!$usuario) {
+            // Verifique se o usuário foi encontrado
+            if (!$usuario) {
+                return response()->json([
+                    "error" => "Usuário não encontrado."
+                ], 404);
+            }
+
+            // Atualize os atributos do usuário com os dados do formulário
+            $usuario->name = $request->input('name');
+            $usuario->email = $request->input('email');
+            $usuario->password = bcrypt($request->input('password'));
+            $usuario->is_admin = $request->input('is_admin', false);
+            $usuario->blocked = $request->input('blocked', false);
+            $usuario->save();
+
             return response()->json([
-                "error" => "Usuário não encontrado."
-            ], 404);
+                "message" => "Usuário editado com sucesso!"
+            ]);
+        } else {
+            return response()->json(["message" => "Usuário não tem permissão"], 403);
         }
-
-        // Atualize os atributos do usuário com os dados do formulário
-        $usuario->name = $request->input('name');
-        $usuario->email = $request->input('email');
-        $usuario->password = bcrypt($request->input('password'));
-        $usuario->is_admin = $request->input('is_admin', false);
-        $usuario->blocked = $request->input('blocked', false);
-        $usuario->save();
-
-        return response()->json([
-            "message" => "Usuário editado com sucesso!"
-        ]);
     }
 }
