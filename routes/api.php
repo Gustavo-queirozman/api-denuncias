@@ -43,6 +43,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('denuncia/{protocolo}', MostrarController::class);
 
     Route::post('resposta', CriarRespostaController::class);
-    Route::get('respostas/{protocolo}', ListarController::class);
+    Route::get('respostas', ListarController::class);
     Route::post('resposta/{protocolo}', CriarRespostaController::class);
 });

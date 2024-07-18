@@ -12,10 +12,10 @@ class ListarController
 {
     use AsAction;
 
-    public function __invoke(Request $request, $protocolo)
+    public function __invoke(Request $request)
     {
-        $idDenuncia = Denuncia::where('protocolo', $protocolo)->first();
-        $respostas = Resposta::where('denuncias_id', $idDenuncia);
+        $idDenuncia = Denuncia::where('protocolo', $request->protocolo)->pluck('id');
+        $respostas = Resposta::whereIn('denuncias_id', $idDenuncia)->get();
         return response()->json([
             'respostas' => $respostas
         ]);
