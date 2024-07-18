@@ -31,18 +31,16 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('forgot', [AuthController::class, 'forgot']);
 Route::post('reset', [AuthController::class, 'reset']);
 
-
-
 Route::middleware('auth:api')->group(function () {
     Route::get('usuarios', ListarUsuarioController::class)->middleware('admin');
     Route::post('usuario/{id}', EditarUsuarioController::class)->middleware('admin');
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
-
-    Route::get('denuncias', ListarDenunciaController::class);
-    Route::post('denuncia', CriarDenunciaController::class);
-    Route::get('denuncia/{protocolo}', MostrarController::class);
-
-    Route::post('resposta', CriarRespostaController::class);
-    Route::get('respostas', ListarController::class);
-    Route::post('resposta/{protocolo}', CriarRespostaController::class);
 });
+
+Route::get('denuncias', ListarDenunciaController::class);
+Route::post('denuncia', CriarDenunciaController::class);
+Route::get('denuncia/{protocolo}', MostrarController::class);
+
+Route::post('resposta', CriarRespostaController::class);
+Route::get('respostas', ListarController::class);
+Route::post('resposta/{protocolo}', CriarRespostaController::class);
