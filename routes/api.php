@@ -33,9 +33,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('usuarios', ListarUsuarioController::class)->middleware('admin');
     Route::post('usuario/{id}', EditarUsuarioController::class)->middleware('admin');
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
+
+    Route::get('denuncias', ListarDenunciaController::class);
 });
 
-Route::get('denuncias', ListarDenunciaController::class);
+
 Route::post('denuncia', CriarDenunciaController::class);
 Route::get('denuncia/{protocolo}', MostrarDenunciaController::class);
 

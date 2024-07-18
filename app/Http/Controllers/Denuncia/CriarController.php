@@ -54,7 +54,8 @@ class CriarController
         }
 
         return response()->json([
-            "message" => "Denúncia criada com sucesso"
+            "message" => "Denúncia criada com sucesso",
+            "data" => ["protocolo" => $protocolo, "senha" => $request->senha]
         ]);
     }
 
@@ -63,9 +64,8 @@ class CriarController
         $request->validate([
             'denuncia' => 'required|string|max:1000',
             'status' => 'required|string|max:20',
-            'protocolo' => 'required|string|max:20',
             'senha' => 'required|string|max:20',
-            'fk_departamentos' => 'integer'
+            'departamentos_id' => 'integer'
         ]);
     }
 
