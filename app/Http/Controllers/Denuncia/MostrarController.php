@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Denuncia;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anexo;
 use App\Models\Denuncia;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -20,8 +21,13 @@ class MostrarController
             ], 404);
         }
 
+        $anexos = Anexo::where('denuncias_id', $denuncia->id)->get();
+
         return response()->json([
-            'denuncia' => $denuncia
+            'denuncia' => $denuncia,
+            'anexos' => $anexos
         ], 200);
     }
+
+
 }
