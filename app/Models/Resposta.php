@@ -12,6 +12,8 @@ class Resposta extends Model
     protected $table = 'respostas';
 
     protected $fillable = [
+        'protocolo',
+        'senha',
         'resposta',
         'users_id',
         'denuncias_id'
