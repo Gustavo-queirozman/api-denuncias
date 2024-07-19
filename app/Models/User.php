@@ -25,7 +25,8 @@ class User extends Authenticatable
         'password',
         'name',
         'is_admin',
-        'enable'
+        'enable',
+        'departamentos_id'
     ];
 
     /**

@@ -25,14 +25,15 @@ class AuthController extends BaseController
      */
     public function register(Request $request): JsonResponse
     {
-        //if (Gate::allows('permission-adm')) {
+        if (Gate::allows('permission-adm')) {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users', // Added unique validation
                 'password' => 'required|max:255',
                 'name' => 'required|max:256',
                 'login' => 'required|unique:users|max:50',
                 'is_admin' => 'boolean',
-                'enable' => 'boolean'
+                'enable' => 'boolean',
+                'departamentos_id' => 'required|string'
             ]);
 
             if ($validator->fails()) {
@@ -46,11 +47,11 @@ class AuthController extends BaseController
             $success['user'] =  $user->user;
 
             return $this->sendResponse($success, 'User register successfully.');
-       // }else{
+       }else{
             return response()->json([
                 "message"=> "Usuário sem permissão"
             ],403);
-        //}
+       }
     }
 
     /**
