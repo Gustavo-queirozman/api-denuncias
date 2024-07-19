@@ -25,7 +25,7 @@ class AuthController extends BaseController
      */
     public function register(Request $request): JsonResponse
     {
-        if (Gate::allows('permission-adm')) {
+        //if (Gate::allows('permission-adm')) {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|unique:users', // Added unique validation
                 'password' => 'required|max:255',
@@ -46,11 +46,11 @@ class AuthController extends BaseController
             $success['user'] =  $user->user;
 
             return $this->sendResponse($success, 'User register successfully.');
-        }else{
+       // }else{
             return response()->json([
                 "message"=> "Usuário sem permissão"
             ],403);
-        }
+        //}
     }
 
     /**
@@ -62,6 +62,10 @@ class AuthController extends BaseController
     {
         if (Auth::attempt(['login' => $request->login, 'password' => $request->password])) {
             $user = Auth::user();
+            if($user->enable == 0 ){
+                return response()->json(['message' => 'User disable!'],202);
+            }
+
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
 
