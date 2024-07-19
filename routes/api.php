@@ -39,7 +39,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 Route::post('denuncia', CriarDenunciaController::class);
-Route::get('denuncia/{protocolo}', MostrarDenunciaController::class);
+Route::get('denuncia', MostrarDenunciaController::class);
 
 Route::get('resposta/{protocolo}', ListarRespostaController::class);
 Route::post('resposta', CriarRespostaController::class);
