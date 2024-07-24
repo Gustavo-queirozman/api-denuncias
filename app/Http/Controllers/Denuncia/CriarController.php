@@ -14,7 +14,6 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class CriarController
 {
     use AsAction;
-
     public function __invoke(Request $request)
     {
         $this->validaDados($request);
@@ -30,26 +29,37 @@ class CriarController
             ], 500);
         }
 
-        $anexos = $request->file('anexos');
+        if ($request->hasFile('anexos')) {
+            $anexos = $request->file('anexos');
 
-        if (is_array($anexos)) {
-            foreach ($anexos as $anexo) {
-                $nomeAnexo = $anexo->getClientOriginalName();
-                $extensaoAnexo = $anexo->getClientOriginalExtension();
-                $anexoData = [
-                    'nome_anexo' => $this->nomearAnexo() . "." . $extensaoAnexo,
-                    'denuncias_id' => $idDenuncia
-                ];
+            // Garante que 'anexos' é sempre um array
+            if (!is_array($anexos)) {
+                $anexos = [$anexos];
+            }
 
-                Storage::put($nomeAnexo, $anexo->getContent());
+            for ($i = 0; $i < count($anexos); $i++) {
+                
+                if ($anexos[$i]->isValid()) {
+                    $extensaoAnexo = $anexos[$i]->getClientOriginalExtension();
+                    $nomeAnexo = $this->nomearAnexo() . '.' . $extensaoAnexo;
 
-                try {
-                    Anexo::create($anexoData);
-                } catch (\Exception $error) {
-                    return response()->json([
-                        "error" => "Erro ao salvar o anexo: " . $error->getMessage()
-                    ], 500);
+                    // Salvar o anexo no sistema de arquivos
+                    try {
+                        $anexos[$i]->storeAs('anexos', $nomeAnexo, 'public');
+
+                        $anexoData = [
+                            'nome_anexo' => $nomeAnexo,
+                            'denuncias_id' => $idDenuncia
+                        ];
+
+                        Anexo::create($anexoData);
+                    } catch (\Exception $error) {
+                        return response()->json([
+                            "error" => "Erro ao salvar o anexo: " . $error->getMessage()
+                        ], 500);
+                    }
                 }
+
             }
         }
 
@@ -59,23 +69,24 @@ class CriarController
         ]);
     }
 
-    private function validaDados($request)
+    private function validaDados(Request $request)
     {
         $request->validate([
             'denuncia' => 'required|string|max:1000',
             'status' => 'required|string|max:20',
             'senha' => 'required|string|max:20',
-            'departamentos_id' => 'integer'
+            'departamentos_id' => 'integer',
+            'anexos.*' => 'file|mimes:jpg,jpeg,png,pdf,docx|max:2048' // Validar cada anexo individualmente
         ]);
     }
 
     private function geraProtocolo()
     {
-        return Carbon::now()->format('YmdHmsv');
+        return now()->format('YmdHmsv');
     }
 
     private function nomearAnexo()
     {
-        return Carbon::now()->format('YmdHmsv');
+        return now()->format('YmdHmsv');
     }
 }
