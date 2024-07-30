@@ -15,10 +15,15 @@ class ListarController
 
     public function __invoke(Request $request)
     {
-        if (Gate::allows('permission-adm')) {
+        if (Auth::user()) {
             try {
                 $departamentosId = Auth::user()->departamentos_id;
                 $denuncias = Denuncia::where('departamentos_id', '!=', $departamentosId)->get();
+                if(empty($denuncias)){
+                    return response()->json([
+                        'message' => 'Nenhuma resposta'
+                    ]);
+                }
                 return response()->json([
                     "denuncias" => $denuncias
                 ]);

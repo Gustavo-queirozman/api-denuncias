@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class EditarController extends Controller
+class EditarController
 {
     use AsAction;
 
@@ -20,7 +20,8 @@ class EditarController extends Controller
                 'email' => 'required|string|email|max:255',
                 'password' => 'required|string|min:8',
                 'is_admin' => 'boolean',
-                'blocked' => 'boolean',
+                'enable' => 'boolean',
+                'departamentos_id' => 'boolean'
             ]);
 
             // Encontre o usuário pelo ID fornecido
@@ -38,7 +39,8 @@ class EditarController extends Controller
             $usuario->email = $request->input('email');
             $usuario->password = bcrypt($request->input('password'));
             $usuario->is_admin = $request->input('is_admin', false);
-            $usuario->blocked = $request->input('blocked', false);
+            $usuario->enable = $request->input('enable');
+            $usuario->departamentos_id = $request->input('departamentos_id');
             $usuario->save();
 
             return response()->json([

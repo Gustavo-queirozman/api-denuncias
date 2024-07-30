@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('usuario/{id}', ExcluirUsuarioController::class)->middleware('admin');
 
     Route::get('denuncias', ListarDenunciaController::class);
+
 });
 
 
