@@ -25,7 +25,7 @@ class ListarController
                 ], 404);
             }
 
-            $respostas = Resposta::whereIn('denuncias_id', [$denuncia->id])->get();
+            $respostas = Resposta::whereIn('denuncias_id', [$denuncia->id])->orderBy('id', 'asc')->get();
 
             return response()->json([
                 'respostas' => $respostas
