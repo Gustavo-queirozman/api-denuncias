@@ -14,10 +14,11 @@ class Denuncia extends Model
 
     protected $fillable = [
         'denuncia',
-        'status',
+        'status_id',
         'protocolo',
         'senha',
-        'departamentos_id'
+        'departamentos_id',
+        'user_status'
     ];
 
     public $timestamp = true;
