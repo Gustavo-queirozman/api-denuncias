@@ -79,7 +79,7 @@ class AuthController extends BaseController
 
     public function forgot(Request $request)
     {
-        DB::setDefaultConnection('SegundaVia');
+        DB::setDefaultConnection('PortalDenuncia');
         $validator = Validator::make($request->all(), [
             'email' => 'required|email'
         ]);
@@ -102,13 +102,13 @@ class AuthController extends BaseController
 
         $token = Str::random(10);
         try {
-            DB::connection('SegundaVia')->table('password_reset_tokens')->insert([
+            DB::connection('PortalDenuncia')->table('password_reset_tokens')->insert([
                 'email' => $email,
                 'token' => $token
             ]);
         } catch (\Exception $exception) {
             if (Str::contains($exception->getMessage(), 'insert duplicate')) {
-                DB::connection('SegundaVia')->table('password_reset_tokens')->where('email', $email)->update([
+                DB::connection('PortalDenuncia')->table('password_reset_tokens')->where('email', $email)->update([
                     'token' => $token
                 ]);
             }
@@ -132,7 +132,7 @@ class AuthController extends BaseController
 
     public function reset(Request $request)
     {
-        DB::setDefaultConnection('SegundaVia');
+        DB::setDefaultConnection('PortalDenuncia');
         $validator = Validator::make($request->all(), [
             'token' => 'required',
             'password' => 'required',
@@ -145,13 +145,13 @@ class AuthController extends BaseController
 
         $token = $request->input('token');
 
-        if (!$passwordResets = DB::connection('SegundaVia')->table('password_reset_tokens')->where('token', $token)->first()) {
+        if (!$passwordResets = DB::connection('PortalDenuncia')->table('password_reset_tokens')->where('token', $token)->first()) {
             return response([
                 'message' => 'Invalid token!'
             ], 400);
         }
 
-        if (!$user = DB::connection('SegundaVia')->table('users')->where('email', $passwordResets->email)->first()) {
+        if (!$user = DB::connection('PortalDenuncia')->table('users')->where('email', $passwordResets->email)->first()) {
             return response([
                 'message' => 'User does\'t exist!'
             ], 404);
@@ -160,7 +160,7 @@ class AuthController extends BaseController
         $password = Hash::make($request->input('password'));
 
 
-        if (DB::connection('SegundaVia')->table('users')->where('id', $user->id)->update(['password' => $password])) {
+        if (DB::connection('PortalDenuncia')->table('users')->where('id', $user->id)->update(['password' => $password])) {
             return response([
                 'message' => 'sucess'
             ]);
